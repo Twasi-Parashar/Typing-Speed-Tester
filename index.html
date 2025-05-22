@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Typing Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f7fa;
+            background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c'); /* Background Image */
+            background-size: cover;
+            background-position: center;
+            color: #333;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent background */
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h1 {
+            font-size: 30px;
+            color: #333;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            font-size: 18px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #f1f1f1;
+            width: 100%;
+            max-width: 250px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        select:hover {
+            background-color: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        #testText {
+            font-size: 22px;
+            line-height: 1.5;
+            width: 100%;
+            min-height: 120px;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow-wrap: break-word;
+            transition: background-color 0.3s ease;
+        }
+
+        textarea {
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+            font-size: 18px;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            background-color: #fff;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+            transform: scale(1.05);
+        }
+
+        #startButton {
+            background: linear-gradient(135deg, #4CAF50, #2E8B57);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        #startButton:hover {
+            background: linear-gradient(135deg, #2E8B57, #4CAF50);
+            transform: scale(1.05);
+        }
+
+        #timer {
+            font-size: 20px;
+            color: #ff6347;
+            margin-bottom: 20px;
+        }
+
+        #progressBarContainer {
+            width: 100%;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        #progressBar {
+            width: 100%;
+            height: 100%;
+            background-color: #4CAF50; /* Default to green */
+            border-radius: 5px;
+        }
+
+        .highlight {
+            color: green;
+            font-weight: bold;
+        }
+
+        .highlightWrong {
+            color: red;
+            font-weight: bold;
+        }
+
+        #result {
+            font-size: 22px;
+            margin-top: 20px;
+            color: #555;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        /* Space mismatch warning */
+        #spaceMismatchMessage {
+            font-size: 16px;
+            color: red;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* Modal Styles */
+        #resultModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .modalButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 10px;
+        }
+
+        .modalButton:hover {
+            background-color: #2E8B57;
+            transform: scale(1.05);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none; /* Hidden by default */
+            z-index: 999;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                width: 100%;
+            }
+            select, textarea, #startButton {
+                width: 100%;
+                font-size: 16px;
+            }
+        }
+
+        /* Help Icon (Hint) */
+        #helpIcon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 100px; /* Increased size */
+            height: 100px; /* Increased size */
+            background-color: transparent; /* No background */
+            border-radius: 50%; /* Circular shape */
+            cursor: pointer;
+            overflow: hidden; /* Ensures image fits well inside circle */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1100;
+        }
+
+        #helpIcon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensure the image fits properly */
+        }
+
+        #helpModal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+        }
+
+        .closeHelpModal {
+            font-size: 24px;
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .closeHelpModal:hover {
+            color: #ff6347;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Typing Speed Test</h1>
+    
+    <div>
+        <select id="difficulty">
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+        </select>
+    </div>
+
+    <!-- Space mismatch warning message placed just above typing area -->
+    <div id="spaceMismatchMessage">Space mismatch! Please type the spaces correctly.</div>
+
+    <div id="testText"></div>
+
+    <textarea id="inputBox" placeholder="Start typing here..." oninput="checkTyping()" disabled></textarea>
+    
+    <div id="timer">Time Remaining: <span id="timeLeft">60</span> seconds</div>
+    <div id="progressBarContainer">
+        <div id="progressBar"></div>
+    </div>
+    
+    <button id="startButton" onclick="startTest()">Start Test</button>
+</div>
+
+<!-- Modal and Overlay for Result -->
+<div class="overlay" id="overlay"></div>
+<div id="resultModal">
+    <h2>Test Completed!</h2>
+    <div id="result"></div>
+    <button class="modalButton" onclick="restartTest()">Restart Test</button>
+</div>
+
+<!-- Help Icon (Hint) -->
+<div id="helpIcon" onclick="showHelpModal()">
+    <img src="https://image.shutterstock.com/z/stock-vector-help-chat-icon-vector-1015037461.jpg" alt="Help">
+</div>
+
+<!-- Help Modal -->
+<div id="helpModal">
+    <span class="closeHelpModal" onclick="closeHelpModal()">×</span>
+    <h2>Proper Keyboard Hand Placement</h2>
+    <img src="https://cdn.autonomous.ai/static/upload/images/common/upload/20220927/A-Guide-on-Proper-Keyboard-Hand-placement0000494b7fb02a7.webp" alt="Hand Placement Guide" width="100%">
+</div>
+
+<script>
+    // Word Pool for random generation (with capitalized words)
+    const wordsPool = {
+        easy: ["the", "quick", "fox", "dog", "over", "jumps", "brown", "lazy", "and", "ran", "away", "fast", "small", "big", "green", "blue", "happy", "quickly", "slowly", "under", "into", "up", "down", "look", "see", "watch", "see", "like", "jump", "laugh", "run", "stop", "start"],
+        medium: ["beautiful", "mountain", "ocean", "incredible", "adventure", "sunshine", "knowledge", "understanding", "simplicity", "grace", "authentic", "courageous", "amazing", "explore", "freedom", "imagine", "inspire", "remarkable", "journey", "change", "destiny", "embrace", "discovery", "life", "unique", "strength", "vision", "brave", "limitless", "dream"],
+        hard: ["extraordinary", "unbelievable", "philosophical", "metaphysical", "consciousness", "transtheoretical", "transcendent", "equilibrium", "perspective", "unsustainable", "dissolution", "incandescent", "defenestration", "mystical", "compartmentalization", "impossibility", "perpendicular", "infrastructure", "extraordinary", "supernatural", "ephemeral"]
+    };
+
+    // Generate Random Text Based on Difficulty with Capitalization
+    function generateRandomText(difficulty) {
+        const wordsCount = {
+            easy: 30,   // 30 words for easy
+            medium: 40, // 40 words for medium
+            hard: 50    // 50 words for hard
+        };
+
+        const words = wordsPool[difficulty];
+        let randomText = [];
+
+        for (let i = 0; i < wordsCount[difficulty]; i++) {
+            let randomWord = words[Math.floor(Math.random() * words.length)];
+            // Randomly capitalize a word
+            if (Math.random() > 0.5) {
+                randomWord = randomWord.charAt(0).toUpperCase() + randomWord.slice(1);
+            }
+            randomText.push(randomWord);
+        }
+
+        return randomText.join(" ") + ".";
+    }
+
+    let currentText = '';
+    let timeRemaining = 60;
+    let timer;
+    let timerRunning = false;
+
+    // Start the typing test
+    function startTest() {
+        const difficulty = document.getElementById("difficulty").value;
+        currentText = generateRandomText(difficulty);
+        document.getElementById("testText").textContent = currentText;
+        document.getElementById("inputBox").disabled = false;
+        document.getElementById("inputBox").value = "";
+        document.getElementById("result").textContent = "";
+        document.getElementById("timeLeft").textContent = timeRemaining;
+        document.getElementById("progressBar").style.width = "100%";
+
+        // Reset progress bar to green when restarting
+        document.getElementById("progressBar").style.backgroundColor = "#4CAF50"; // Green
+
+        timerRunning = true;
+        document.getElementById("startButton").disabled = true;
+
+        // Timer countdown logic
+        timer = setInterval(function() {
+            if (timeRemaining > 0) {
+                timeRemaining--;
+                document.getElementById("timeLeft").textContent = timeRemaining;
+                document.getElementById("progressBar").style.width = `${(timeRemaining / 60) * 100}%`;
+
+                // Change the progress bar color based on remaining time
+                if (timeRemaining > 45) {
+                    document.getElementById("progressBar").style.backgroundColor = "#4CAF50"; // Green
+                } else if (timeRemaining <= 45 && timeRemaining > 30) {
+                    document.getElementById("progressBar").style.backgroundColor = "#FF9800"; // Orange
+                } else if (timeRemaining <= 30 && timeRemaining > 15) {
+                    document.getElementById("progressBar").style.backgroundColor = "#FFEB3B"; // Yellow
+                } else {
+                    document.getElementById("progressBar").style.backgroundColor = "#F44336"; // Red
+                }
+            } else {
+                clearInterval(timer);
+                timerRunning = false;
+                document.getElementById("inputBox").disabled = true;
+                calculateWPM();
+            }
+        }, 1000);
+    }
+
+    // Function to check user input and highlight text
+    function checkTyping() {
+        let inputText = document.getElementById("inputBox").value;
+        let displayText = currentText.split(''); 
+
+        let highlightedText = '';
+        let spaceMismatch = false;
+
+        for (let i = 0; i < displayText.length; i++) {
+            if (i < inputText.length) {
+                if (inputText[i] === displayText[i]) {
+                    highlightedText += `<span class="highlight">${displayText[i]}</span>`;
+                } else {
+                    highlightedText += `<span class="highlightWrong">${displayText[i]}</span>`;
+                    if (displayText[i] === " " && inputText[i] !== " ") {
+                        spaceMismatch = true;
+                    }
+                }
+            } else {
+                highlightedText += displayText[i];
+            }
+        }
+
+        document.getElementById("testText").innerHTML = highlightedText;
+
+        if (spaceMismatch) {
+            document.getElementById("spaceMismatchMessage").style.display = "block";
+        } else {
+            document.getElementById("spaceMismatchMessage").style.display = "none";
+        }
+
+        // Check if typing is complete
+        if (inputText === currentText) {
+            clearInterval(timer);
+            calculateWPM();
+        }
+    }
+
+    // Function to calculate Words Per Minute (WPM)
+    function calculateWPM() {
+        const timeTaken = 60 - timeRemaining;
+        const wordsTyped = currentText.split(' ').length;
+        const wpm = Math.round((wordsTyped / timeTaken) * 60);
+        document.getElementById("result").textContent = `Words per minute: ${wpm}`;
+        showResultModal();
+    }
+
+    // Function to show result modal
+    function showResultModal() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("resultModal").style.display = "block";
+    }
+
+    // Function to restart the test with default values
+    function restartTest() {
+        timeRemaining = 60;
+        document.getElementById("timeLeft").textContent = timeRemaining;
+        document.getElementById("inputBox").value = "";
+        document.getElementById("testText").textContent = "";
+        document.getElementById("result").textContent = "";
+
+        // Reset difficulty selector to "easy"
+        document.getElementById("difficulty").value = "easy";
+
+        document.getElementById("progressBar").style.width = "100%";
+        document.getElementById("progressBar").style.backgroundColor = "#4CAF50"; // Reset color to green
+        document.getElementById("inputBox").disabled = true;
+        document.getElementById("startButton").disabled = false;
+
+        // Hide the result modal and overlay
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("resultModal").style.display = "none";
+    }
+
+    // Show the Help Modal when the hint icon is clicked
+    function showHelpModal() {
+        document.getElementById("helpModal").style.display = "block";
+    }
+
+    // Close the Help Modal
+    function closeHelpModal() {
+        document.getElementById("helpModal").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
+
+
