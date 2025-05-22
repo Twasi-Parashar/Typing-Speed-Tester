@@ -1,4 +1,4 @@
-# 🧠 Typing Speed Test
+# 🧠 Typing Speed Test ----  https://twasi-parashar.github.io/Typing-Speed-Tester/
 
 A beautifully styled, interactive **Typing Speed Test** web app that helps users measure their typing speed in real time. Includes difficulty levels, live progress, real-time word highlighting, and helpful visuals for hand placement.
 
